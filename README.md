@@ -5,6 +5,7 @@
 Alunos:
 
 * Henrique Aparecido Laureano
+* Elainy Marciano Batista
 * Heidi Mara do Rosário Souza
 * Joubert Miranda Guedes
 * Nicolas Romano
