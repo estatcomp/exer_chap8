@@ -1,0 +1,171 @@
+---
+title: "Exercises - Chapter 8: Permutation Tests"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+---
+***
+
+Alunos:
+
+* Henrique Aparecido Laureano
+* Heidi Mara do Rosário Souza
+* Joubert Miranda Guedes
+* Pedro Luciano de Oliveira Gomes
+* Ricardo de Faria Souza
+* Telma Tompson
+* Thais Castelo Branco Monho
+
+* *In memoriam* Nicolas Romano
+
+***
+
+Exercícios do capítulo 8 do livro:
+
+**Maria L. Rizzo, 2008. *Statistical Computing with R*, Chapman &
+  Hall/CRC, ISBN 1-58488-545-9, 393 pages.**
+
+```{r, include=FALSE}
+# <r code> =========================================================== #
+library(knitr)
+
+opts_chunk$set(cache=TRUE
+               , cache.path="cache/"
+               , fig.path="iBagens/"
+               , dpi=100
+               , fig.align="center"
+               , comment=NA
+               , warning=FALSE
+               , error=FALSE
+               , message=FALSE)
+
+options(width=100)
+# </r code> ========================================================== #
+```
+
+***
+
+# Exercise 8.1
+
+***
+
+**Implement the two-sample Cramér-von Mises test for equal distributions
+  as a permutation test. Apply the test to the data in Examples 8.1 and
+  8.2.**
+
+***
+
+Solution:
+
+***
+
+# Exercise 8.2
+
+***
+
+**Implement the bivariate Spearman rank correlation test for
+  independence [255] as a permutation test. The Spearman rank
+  correlation test statistic can be obtained from function `cor` with
+  `method = "spearman"`. Compare the achieved significance level of the
+  permutation test with the *p*-value reported by `cor.test` on the same
+  samples.**
+
+***
+
+Solution:
+
+***
+
+# Exercise 8.3
+
+***
+
+**The Count 5 test for equal variances in Section 6.4 is based on the
+  maximum number of extreme points. Example 6.15 shows that the Count 5
+  criterion is not applicable for unequal sample sizes. Implement a
+  permutation test for equal variance based on the maximum number of
+  extreme points that applies when sample sizes are not necessarily
+  equal.**
+
+***
+
+Solution:
+
+***
+
+# Exercise 8.4
+
+***
+
+**Complete the steps to implement a \(r^{th}\) -nearest neighbors test
+  for equal distributions. Write a function to compute the test 
+  statistic. The function should take the data matrix as its first
+  argument, and an index vector as the second argument. The number of
+  nearest neighbors r should follow the index argument.**
+
+***
+
+Solution:
+
+```{r, fig.width=10, fig.show='hold'}
+# <r code> =========================================================== #
+data("chickwts")
+
+## Dataset
+x <- with(chickwts, as.vector(weight[feed == "sunflower"]))
+y <- with(chickwts, as.vector(weight[feed == "linseed"]))
+z <- cbind( c(x, y), rep(0, length(c(x, y))) )
+
+## Packages
+library(boot)
+library(FNN)
+library(latticeExtra)
+
+## function: r^{th} -nearest neighbors test for equal distributions
+my.knn <- function(z, nn) {
+  t_n.i <- function(z, nn, i) {
+    n_g <- nrow(z) / 2 # length x and length y
+    n <- nrow(z)
+    z <- z[i, ]
+    z <- cbind(z, rep(0, n))
+    knn <- get.knn(z, k = nn) # Obtaining the k nearest neighbors
+    n_1 <- knn$nn.index[1:n_g, ]       # Dividing x
+    n_2 <- knn$nn.index[(n_g + 1):n, ] # and y
+    i_1 <- sum(n_1 < n_g + .5) # Obtaining the sum of
+    i_2 <- sum(n_2 > n_g + .5) # the indicator functions
+    return( (i_1 + i_2) / (nn * n) ) # Test statistic
+  }
+  perm <- boot(data = z # 10000 permutation samples
+               , statistic = t_n.i
+               , sim = "permutation"
+               , R = 10000
+               , nn = 3
+  )
+  p <- with(perm, mean( c(t, t0) >= t0 )) # p-value
+  return(
+    histogram(with(perm, c(t, t0)) # Histogram
+              , type = "density"
+              , col = "#0080ff"
+              , xlim = c(-.1, 1.1)
+              , xlab = paste0("Replicates of T(n, ", nn, ") statistic")
+              , main = paste0("Permutation distribution of T(n, "
+                              , nn, ") statistic")
+              , panel = function(...){
+                panel.histogram(...)
+                panel.abline(v = p, col = 2, lwd = 2)
+                args <- list(...)
+                panel.text(.1, 1
+                           , substitute(paste(hat(p), " = ", pvalue)
+                                        , list(pvalue = p))
+                           , col = 2)
+              })
+  )
+}
+my.knn(z, 3) # k (or r) nearest neighbors = 3
+# </r code> ========================================================== #
+```
+
+***
