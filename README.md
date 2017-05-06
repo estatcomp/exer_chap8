@@ -7,12 +7,11 @@ Alunos:
 * Henrique Aparecido Laureano
 * Heidi Mara do Rosário Souza
 * Joubert Miranda Guedes
+* Nicolas Romano
 * Pedro Luciano de Oliveira Gomes
 * Ricardo de Faria Souza
 * Telma Tompson
 * Thais Castelo Branco Monho
-
-* *In memoriam* Nicolas Romano
 
 ***
 
