@@ -22,6 +22,6 @@ Exercícios do capítulo 8 do livro:
 
 ***
 
-[**Versão compilada (html)**]()
+[**Versão compilada (html)**](http://estatcomp.github.io/henrique/exer_chap8.html)
 
 ***
